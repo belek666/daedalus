@@ -86,7 +86,7 @@ project (DaedalusX64)
 				set (POSIX_HLEGRAPHICS SysPosix/HLEGraphics/DisplayListDebugger.cpp)
 				set (POSIX_MAIN_FILES SysPosix/main.cpp)
 				set (POSIX_UTILITY SysPosix/Utility/CondPosix.cpp SysPosix/Utility/IOPosix.cpp SysPosix/Utility/ThreadPosix.cpp SysPosix/Utility/TimingPosix.cpp)
-				set (POSIX_BUILD ${POSIX_DEBUG} ${POSIX_DYNAREC} ${POSIX_HLEGRAPHICS} ${POSIX_UTILITY})
+				set (POSIX_BUILD ${POSIX_DYNAREC} ${POSIX_UTILITY})
 
 				# These will remain separate for now..
 				set (LINUX_AUDIO SysPosix/HLEAudio/AudioPluginLinux.cpp)
@@ -131,13 +131,21 @@ endif (PSP_DEBUG)
 
 if (VITA_RELEASE)
 	message("PSVIta Release Build..")
-	include_directories(${PROJECT_SOURCE_DIR}/Config/Dev)
-	add_definitions("-O2 -fno-omit-frame-pointer -D_DEBUG -MD -Wall")
-	include_directories(BEFORE ${PROJECT_SOURCE_DIR}/SysVita/Include)
-	add_library(daedalus STATIC ${BUILD} ${PSP_BUILD})
-	add_executable(daedalus.elf ${PSP_MAIN_FILES})
-	#set_target_properties(daedalus.elf PROPERTIES LINK_FLAGS "-specs=${PSPSDK}/lib/prxspecs -Wl,-q,-T${PSPSDK}/lib/linkfile.prx ${PSPSDK}/lib/prxexports.o -L${PSPSDK}/lib")
-#	target_include_directories(daedalus.elf PUBLIC /usr/local/pspdev/psp/sdk/include )
+
+#Build Daedalus Library
+  include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/Config/Release ${PROJECT_SOURCE_DIR}/SysPosix/Include)
+  	add_definitions(-DDAEDALUS_VITA )
+  add_library(daedalus.lib STATIC ${BUILD} ${POSIX_BUILD} )
+  add_executable(daedalus ${POSIX_MAIN_FILES})
+  target_link_libraries(daedalus LINK_PUBLIC daedalus.lib)
+
+#	include_directories(${PROJECT_SOURCE_DIR}/Config/Release)
+#	add_definitions("-O2 -fno-omit-frame-pointer -D_DEBUG -MD -Wall")
+#	include_directories(BEFORE ${PROJECT_SOURCE_DIR}/SysVita/Include)
+#	add_library(daedalus STATIC ${BUILD} ${POSIX_BUILD})
+#	add_executable(daedalus.elf ${PSP_MAIN_FILES})
+#	#set_target_properties(daedalus.elf PROPERTIES LINK_FLAGS "-specs=${PSPSDK}/lib/prxspecs -Wl,-q,-T${PSPSDK}/lib/linkfile.prx ${PSPSDK}/lib/prxexports.o -L${PSPSDK}/lib")
+#  target_include_directories(daedalus.elf PUBLIC /usr/local/vitasdk/arm-vita-eabi/include )
 #	target_link_libraries(daedalus.elf daedalus -lstdc++ -lpsppower -lpspgu -lpspaudiolib -lpspaudio -lpsprtc -lpng -lz -lc -lg -lm -lpspfpu pspkubridge ${PSPSDK_LIBS})
 endif (VITA_RELEASE)
 

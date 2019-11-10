@@ -22,10 +22,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <stdlib.h>
 
-class CCodeBufferManagerOSX : public CCodeBufferManager
+class CCodeBufferManagerPosix : public CCodeBufferManager
 {
 public:
-	CCodeBufferManagerOSX()
+	CCodeBufferManagerPosix()
 	{
 	}
 
@@ -39,32 +39,32 @@ public:
 
 CCodeBufferManager * CCodeBufferManager::Create()
 {
-	return new CCodeBufferManagerOSX;
+	return new CCodeBufferManagerPosix;
 }
 
-bool CCodeBufferManagerOSX::Initialise()
+bool CCodeBufferManagerPosix::Initialise()
 {
 	DAEDALUS_ASSERT(false, "Unimplemented");
 	return true;
 }
 
-void CCodeBufferManagerOSX::Reset()
+void CCodeBufferManagerPosix::Reset()
 {
 	DAEDALUS_ASSERT(false, "Unimplemented");
 }
 
-void CCodeBufferManagerOSX::Finalise()
+void CCodeBufferManagerPosix::Finalise()
 {
 	DAEDALUS_ASSERT(false, "Unimplemented");
 }
 
-CCodeGenerator * CCodeBufferManagerOSX::StartNewBlock()
+CCodeGenerator * CCodeBufferManagerPosix::StartNewBlock()
 {
 	DAEDALUS_ASSERT(false, "Unimplemented");
 	return NULL;
 }
 
-u32 CCodeBufferManagerOSX::FinaliseCurrentBlock()
+u32 CCodeBufferManagerPosix::FinaliseCurrentBlock()
 {
 	DAEDALUS_ASSERT(false, "Unimplemented");
 	return 0;

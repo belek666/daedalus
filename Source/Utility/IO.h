@@ -26,6 +26,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <pspiofilemgr.h>
 #endif
 
+#ifdef DAEDALUS_VITA
+#include <psp2/io/fcntl.h>
+#include <psp2/io/dirent.h>
+#include <psp2/io/stat.h>
+#endif
+
 #include <string.h>
 
 namespace IO
@@ -83,12 +89,13 @@ namespace IO
 		Filename	Name;
 	};
 
-#if defined( DAEDALUS_PSP )
+#if defined( DAEDALUS_PSP ) || defined(DAEDALUS_VITA)
 	typedef SceUID FindHandleT;
 #elif defined( DAEDALUS_W32 )
 	typedef intptr_t FindHandleT;
 #elif defined( DAEDALUS_OSX ) || defined( DAEDALUS_LINUX )
 	typedef void * FindHandleT;
+
 #else
 #error Need to define FindHandleT for this platform
 #endif

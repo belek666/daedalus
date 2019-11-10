@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdlib.h>
 #include "Utility/DaedalusTypes.h"
 
-#if defined( DAEDALUS_PSP )
+#if defined( DAEDALUS_PSP ) || defined(DAEDALUS_VITA)
 
 extern "C"
 {
@@ -111,4 +111,3 @@ inline u32 AtomicBitSet( volatile u32 * ptr, u32 and_bits, u32 or_bits )
 #endif
 
 #endif // UTILITY_ATOMICPRIMITIVES_H_
-
