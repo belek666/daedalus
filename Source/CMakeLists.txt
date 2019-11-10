@@ -129,6 +129,18 @@ set_property(TARGET pspkubridge PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}
 	target_link_libraries(daedalus.elf daedalus -lstdc++ -lpsppower -lpspgu -lpspaudiolib -lpspaudio -lpsprtc -lpng -lz -lc -lg -lm -lpspfpu pspkubridge ${PSPSDK_LIBS})
 endif (PSP_DEBUG)
 
+if (VITA_RELEASE)
+	message("PSVIta Release Build..")
+	include_directories(${PROJECT_SOURCE_DIR}/Config/Dev)
+	add_definitions("-O2 -fno-omit-frame-pointer -D_DEBUG -MD -Wall")
+	include_directories(BEFORE ${PROJECT_SOURCE_DIR}/SysVita/Include)
+	add_library(daedalus STATIC ${BUILD} ${PSP_BUILD})
+	add_executable(daedalus.elf ${PSP_MAIN_FILES})
+	#set_target_properties(daedalus.elf PROPERTIES LINK_FLAGS "-specs=${PSPSDK}/lib/prxspecs -Wl,-q,-T${PSPSDK}/lib/linkfile.prx ${PSPSDK}/lib/prxexports.o -L${PSPSDK}/lib")
+#	target_include_directories(daedalus.elf PUBLIC /usr/local/pspdev/psp/sdk/include )
+#	target_link_libraries(daedalus.elf daedalus -lstdc++ -lpsppower -lpspgu -lpspaudiolib -lpspaudio -lpsprtc -lpng -lz -lc -lg -lm -lpspfpu pspkubridge ${PSPSDK_LIBS})
+endif (VITA_RELEASE)
+
 if (MAC_RELEASE OR LINUX_RELEASE)
 
 add_definitions("-DNDEBUG -O3")

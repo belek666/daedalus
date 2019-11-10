@@ -87,6 +87,14 @@ elif [ "$1" = "LINUX_RELEASE" ] || [ "$1" = "MAC_RELEASE" ]; then
 make
 finalPrep
 cp daedalus ../DaedalusX64
+
+elif [ "$1" = "VITA_RELEASE" ]; then
+	pre_prep
+	mkdir "$PWD/daedbuild"
+	cd "$PWD/daedbuild"
+	cmake -DCMAKE_TOOLCHAIN_FILE=/usr/local/vitasdk/share/vita.toolchain.cmake -D $"$1=1" ../Source
+	make
+	finalPrep
 else
 usage
 fi
