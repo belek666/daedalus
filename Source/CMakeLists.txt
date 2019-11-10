@@ -137,7 +137,7 @@ if (VITA_RELEASE)
   add_definitions(-DDAEDALUS_VITA )
   add_library(daedalus.lib STATIC ${BUILD} ${POSIX_BUILD} )
   add_executable(daedalus ${POSIX_MAIN_FILES})
-  target_link_libraries(daedalus LINK_PUBLIC daedalus.lib)
+  target_link_libraries(daedalus daedalus.lib -lstdc++ -lpthread -lz -lm -lc -lg)
 
 endif (VITA_RELEASE)
 

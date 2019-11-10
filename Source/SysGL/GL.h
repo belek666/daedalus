@@ -2,7 +2,7 @@
 #define SYSGL_GL_H_
 
 #ifdef DAEDALUS_VITA
-#include <psp2/gxm.h>
+#include <GL/gl.h>
 #else
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -18,7 +18,7 @@ void sceGuFog(float mn, float mx, u32 col);
 
 enum EGuTextureWrapMode
 {
-	GU_CLAMP			= GL_CLAMP_TO_EDGE,
+	GU_CLAMP			= GL_CLAMP,
 	GU_REPEAT			= GL_REPEAT,
 };
 

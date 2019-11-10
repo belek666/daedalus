@@ -161,7 +161,7 @@ BaseRenderer::BaseRenderer()
 ,	mNastyTexture(false)
 #endif
 {
-#ifdef DAEDALUS_DEBUG_CONSOLE && DAEDALUS_PSP
+#ifdef DAEDALUS_DEBUG_CONSOLE
 	DAEDALUS_ASSERT( IsPointerAligned( &mTnL, 16 ), "Oops, mTnL should be 16-byte aligned" );
 #endif
 	for ( u32 i {}; i < kNumBoundTextures; i++ )
@@ -606,8 +606,8 @@ static u32 clipToHyperPlane( DaedalusVtx4 * dest, const DaedalusVtx4 * source, u
 	u32 outCount(0);
 	DaedalusVtx4 * out(dest);
 
-	const DaedalusVtx4 * a {};
-	const DaedalusVtx4 * b(source) {};
+	const DaedalusVtx4 *a;
+	const DaedalusVtx4 *b(source);
 
 	f32 bDotPlane = b->ProjectedPos.Dot( plane );
 
@@ -1289,7 +1289,7 @@ void BaseRenderer::SetNewVertexInfoConker(u32 address, u32 v0, u32 n)
 			}
 			else
 			{	//NORMAL LIGHT
-				for (l {}; l < mTnL.NumLights; l++)
+				for (l = 0; l < mTnL.NumLights; l++)
 				{
 					if ( mTnL.Lights[l].SkipIfZero )
 					{
@@ -2015,7 +2015,7 @@ void BaseRenderer::SetScissor( u32 x0, u32 y0, u32 x1, u32 y1 )
 	s32 h {Max<s32>( b - t, 0 )};
 	glScissor( l, (s32)mScreenHeight - (t + h), w, h );
 #else
-	DAEDALUS_ERROR("Need to implement scissor for this platform.")
+	DAEDALUS_ERROR("Need to implement scissor for this platform.");
 #endif
 }
 

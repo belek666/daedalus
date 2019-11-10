@@ -20,25 +20,31 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "stdafx.h"
 #include "Utility/IO.h"
 
+//#include <pspiofilemgr.h>
 #include <sys/stat.h>
-#include <sys/types.h>
 #include <dirent.h>
 #include <stdio.h>
 
 namespace IO
 {
-	const char kPathSeparator = '/';
+	struct SceIoDirentGuarded
+	{
+		SceIoDirent Dirent;
+		char Guard[256];			// Not sure, but it looks like SceIoDirent is somehow mis-declared in the pspsdk, so it ends up scribbling over stack?
+	};
+	SceIoDirentGuarded	gDirEntry;
 
+	const char gPathSeparator( '/' );
 	namespace File
 	{
 		bool	Move( const char * p_existing, const char * p_new )
 		{
-			return rename( p_existing, p_new ) >= 0;
+			return sceIoRename( p_existing, p_new ) >= 0;
 		}
 
 		bool	Delete( const char * p_file )
 		{
-			return remove( p_file ) == 0;
+			return sceIoRemove( p_file ) >= 0;
 		}
 
 		bool	Exists( const char * p_path )
@@ -54,12 +60,17 @@ namespace IO
 				return false;
 			}
 		}
+
+		int	Stat( const char *p_file, SceIoStat *stat )
+		{
+			return sceIoGetstat ( p_file, stat );
+		}
 	}
 	namespace Directory
 	{
 		bool	Create( const char * p_path )
 		{
-			return mkdir( p_path, 0777 ) == 0;
+			return sceIoMkdir( p_path, 0777 ) == 0;
 		}
 
 		bool	EnsureExists( const char * p_path )
@@ -73,7 +84,9 @@ namespace IO
 			IO::Path::RemoveBackslash( p_path_parent );
 			if( IO::Path::RemoveFileSpec( p_path_parent ) )
 			{
+				//
 				//	Recursively create parents. Need to be careful of stack overflow
+				//
 				if( !EnsureExists( p_path_parent ) )
 					return false;
 			}
@@ -87,7 +100,7 @@ namespace IO
 
 			if(stat( p_path, &s ) == 0)
 			{
-				if(s.st_mode & S_IFDIR)
+				if(s.st_mode & _IFDIR)
 				{
 					return true;
 				}
@@ -112,9 +125,9 @@ namespace IO
 
 			if(len > 0)
 			{
-				if(p_path[len-1] != kPathSeparator)
+				if(p_path[len-1] != gPathSeparator)
 				{
-					p_path[len] = kPathSeparator;
+					p_path[len] = gPathSeparator;
 					p_path[len+1] = '\0';
 					len++;
 				}
@@ -130,14 +143,14 @@ namespace IO
 
 		const char *	FindFileName( const char * p_path )
 		{
-			char * p_last_slash = strrchr( p_path, kPathSeparator );
+			char * p_last_slash = strrchr( p_path, gPathSeparator );
 			if ( p_last_slash )
 			{
 				return p_last_slash + 1;
 			}
 			else
 			{
-				return NULL;
+				return nullptr;
 			}
 		}
 
@@ -147,18 +160,18 @@ namespace IO
 			if ( len > 0 )
 			{
 				char * p_last_char( &p_path[ len - 1 ] );
-				if ( *p_last_char == kPathSeparator )
+				if ( *p_last_char == gPathSeparator )
 				{
 					*p_last_char = '\0';
 				}
 				return p_last_char;
 			}
-			return NULL;
+			return nullptr;
 		}
 
 		bool	RemoveFileSpec( char * p_path )
 		{
-			char * last_slash = strrchr( p_path, kPathSeparator );
+			char * last_slash = strrchr( p_path, gPathSeparator );
 			if ( last_slash )
 			{
 				*last_slash = '\0';
@@ -180,25 +193,64 @@ namespace IO
 		{
 			strcat( p_path, p_ext );
 		}
+
+
+		int DeleteRecursive(const char * p_path, const char * p_extension)
+		{
+			SceUID fh;
+
+			IO::Filename file;
+			fh = sceIoDopen(p_path);
+
+			if( fh )
+			{
+				while(sceIoDread( fh, &gDirEntry.Dirent ))
+				{
+					SceIoStat stat;
+					IO::Path::Combine(file, p_path, gDirEntry.Dirent.d_name);
+
+					sceIoGetstat( file, &stat );
+					if( (stat.st_mode & 0x1000) == 0x1000 )
+					{
+						if(strcmp(gDirEntry.Dirent.d_name, ".") && strcmp(gDirEntry.Dirent.d_name, ".."))
+						{
+							//printf("Found directory\n");
+						}
+					}
+					else
+					{
+						if (_strcmpi(FindExtension( file ), p_extension) == 0)
+						{
+							//DBGConsole_Msg(0, "Deleting [C%s]",file);
+							sceIoRemove( file );
+						}
+
+					}
+				}
+				sceIoDclose( fh );
+			}
+			else
+			{
+				//DBGConsole_Msg(0, "Couldn't open the directory");
+			}
+
+			return 0;
+		}
 	}
-
-
-
 
 	bool	FindFileOpen( const char * path, FindHandleT * handle, FindDataT & data )
 	{
-		DIR * d = opendir( path );
-		if( d != NULL )
+		*handle = sceIoDopen( path );
+		if( *handle >= 0 )
 		{
 			// To support findfirstfile() API we must return the first result immediately
-			if( FindFileNext( d, data ) )
+			if( FindFileNext( *handle, data ) )
 			{
-				*handle = d;
 				return true;
 			}
 
 			// Clean up
-			closedir( d );
+			sceIoDclose( *handle );
 		}
 
 		return false;
@@ -206,15 +258,13 @@ namespace IO
 
 	bool	FindFileNext( FindHandleT handle, FindDataT & data )
 	{
-		DAEDALUS_ASSERT( handle != NULL, "Cannot search with invalid directory handle" );
+		#ifdef DAEDALUS_ENABLE_ASSERTS
+		DAEDALUS_ASSERT( handle >= 0, "Cannot search with invalid directory handle" );
+		#endif
 
-		while (dirent * ep = readdir( static_cast< DIR * >( handle ) ) )
+		if( sceIoDread( handle, &gDirEntry.Dirent ) > 0 )
 		{
-			// Ignore hidden files (and '.' and '..')
-			if (ep->d_name[0] == '.')
-				continue;
-
-			IO::Path::Assign( data.Name, ep->d_name );
+			IO::Path::Assign( data.Name, gDirEntry.Dirent.d_name );
 			return true;
 		}
 
@@ -223,10 +273,10 @@ namespace IO
 
 	bool	FindFileClose( FindHandleT handle )
 	{
-		DAEDALUS_ASSERT( handle != NULL, "Trying to close an invalid directory handle" );
-
-		return closedir( static_cast< DIR * >( handle ) ) >= 0;
+		#ifdef DAEDALUS_ENABLE_ASSERTS
+		DAEDALUS_ASSERT( handle >= 0, "Trying to close an invalid directory handle" );
+		#endif
+		return ( sceIoDclose( handle ) >= 0 );
 	}
+
 }
-
-

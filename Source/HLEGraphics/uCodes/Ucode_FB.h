@@ -80,7 +80,8 @@ static inline void DrawFrameBuffer(u32 origin, const CNativeTexture * texture)
 			src_offset += 2;
 		}
 	}
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, FB_WIDTH, FB_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, pixels);
+glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, FB_WIDTH, FB_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_SHORT, pixels);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, FB_WIDTH, FB_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, pixels); // GL_UNSIGNED_SHORT_5_5_5_1 is not declared for VitaSDK
 
 	//ToDO: Implement me PSP
 	//Doesn't work
