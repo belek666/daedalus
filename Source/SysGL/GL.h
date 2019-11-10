@@ -1,12 +1,16 @@
 #ifndef SYSGL_GL_H_
 #define SYSGL_GL_H_
 
+#ifdef DAEDALUS_VITA
+#include <psp2/gxm.h>
+#else
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#endif
 
 #include "Utility/DaedalusTypes.h"
 
-extern GLFWwindow * gWindow;
+//extern GLFWwindow * gWindow;
 
 // FIXME: burn all of this with fire.
 
