@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "Plugins/AudioPlugin.h"
 #include "Config/ConfigOptions.h"
 
