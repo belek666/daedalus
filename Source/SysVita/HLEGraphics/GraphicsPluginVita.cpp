@@ -36,6 +36,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Utility/Timing.h"
 
+u32                 gVISyncRate     = 1500;
+
 // This is an extremely basic graphics plugin for now, doesn't do anything yet
 
 class CGraphicsPluginVita : public CGraphicsPlugin
