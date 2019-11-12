@@ -89,8 +89,10 @@ project (DaedalusX64)
 				set (POSIX_BUILD ${POSIX_DYNAREC} ${POSIX_UTILITY})
 
         set (VITA_AUDIO SysVita/HLEAudio/AudioPluginVita.cpp)
-        set (VITA_GRAPHICS SysVita/HLEGraphics/GraphicsPluginVita.cpp)
-        set (VITA_BUILD ${VITA_AUDIO} ${VITA_GRAPHICS})
+        set (VITA_GRAPHICS SysVita/HLEGraphics/GraphicsPluginVita.cpp SysVita/HLEGraphics/RendererVita.cpp)
+				set (VITA_MAIN SysVita/main.cpp)
+			  set (VITA_BUILD ${VITA_AUDIO} ${VITA_GRAPHICS})
+
 				# These will remain separate for now..
 				set (LINUX_AUDIO SysPosix/HLEAudio/AudioPluginLinux.cpp)
 				set (MAC_AUDIO SysPosix/HLEAudio/AudioPluginOSX.cpp)
@@ -139,18 +141,18 @@ if (VITA_RELEASE)
   include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/Config/Release ${PROJECT_SOURCE_DIR}/SysPosix/Include)
   add_definitions(-DDAEDALUS_VITA )
   add_library(daedalus.lib STATIC ${BUILD} ${VITA_BUILD} ${POSIX_BUILD} )
-  add_executable(daedalus ${POSIX_MAIN_FILES})
+  add_executable(daedalus ${VITA_MAIN})
   target_link_libraries(daedalus daedalus.lib -lstdc++ -lpthread -lz -lm -lc -lg)
 
 endif (VITA_RELEASE)
 
-if (MAC_RELEASE OR LINUX_RELEASE)
+if (LINUX_RELEASE)
 
 add_definitions("-DNDEBUG -O3")
 include_directories(${PROJECT_SOURCE_DIR/HLEGraphics})
 include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/Config/Release ${PROJECT_SOURCE_DIR}/SysPosix/Include)
 
-endif (MAC_RELEASE OR LINUX_RELEASE)
+endif (LINUX_RELEASE)
 
 if (LINUX_RELEASE)
 
@@ -169,26 +171,3 @@ if (LINUX_RELEASE)
 			add_executable(daedalus ${POSIX_MAIN_FILES})
 		target_link_libraries(daedalus LINK_PUBLIC daedalus.lib )
 endif (LINUX_RELEASE)
-
-
-if (MAC_RELEASE)
-
-		message("Mac Release Build..")
-FIND_PATH(OPENGL_INCLUDE_DIR gl.h)
-	FIND_LIBRARY(OPENGL_LIBRARY OpenGL)
-		include_directories(/usr/local/include -framework OpenGL)
-		link_directories(/usr/local/lib)
-
-    add_definitions("-DDAEDALUS_OSX" -g)
-		#Build SysGL Lib
-		add_library(sysGL STATIC ${SYSGL_BUILD})
-		target_link_libraries(sysGL -lGLEW -lSDL2 -ldl "-framework OpeNGL -framework AudioToolbox -framework Cocoa -framework IOKit -framework CoreVideo"  )
-
-		#Build Daedalus Lib
-		add_library(daedalus.lib STATIC ${BUILD} ${POSIX_BUILD} ${MAC_AUDIO} )
-	target_link_libraries(daedalus.lib sysGL png z minizip pthread)
-
-		#Build and Link Executable
-			add_executable(daedalus ${POSIX_MAIN_FILES})
-		target_link_libraries(daedalus LINK_PUBLIC daedalus.lib )
-endif (MAC_RELEASE)
