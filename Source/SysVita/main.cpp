@@ -37,8 +37,9 @@ int main(int argc, char **argv)
 
 	if (argc > 0)
 	{
-		IO::Filename exe_path;
-		realpath(argv[0], exe_path);
+		IO::Filename exe_path = "ux0:/";
+
+		//realpath(argv[0], exe_path);
 
 		strcpy(gDaedalusExePath, exe_path);
 		IO::Path::RemoveFileSpec(gDaedalusExePath);
@@ -83,8 +84,9 @@ int main(int argc, char **argv)
 						const char * relative_path = argv[i+1];
 						++i;
 
-						IO::Filename	dir;
-						realpath(relative_path, dir);
+						IO::Filename	dir = "ux0:/Roms/";
+						//Hard coded path for now
+						//realpath(relative_path, dir);
 
 						CRomDB::Get()->AddRomDirectory(dir);
 					}
@@ -92,7 +94,7 @@ int main(int argc, char **argv)
 			}
 			else
 			{
-				filename = arg;
+				filename = "ux0:/rom.v64";
 			}
 		}
 
