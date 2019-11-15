@@ -92,6 +92,7 @@ project (DaedalusX64)
         set (VITA_GRAPHICS SysVita/HLEGraphics/GraphicsPluginVita.cpp SysVita/HLEGraphics/RendererVita.cpp)
 				set (VITA_UTILITY SysVita/Utility/ThreadVita.cpp)
 				set (VITA_MAIN SysVita/main.cpp)
+				set (VITA_POSIX SysPosix/Utility/CondPosix.cpp SysPosix/Utility/IOPosix.cpp SysPosix/Utility/TimingPosix.cpp)
 			  set (VITA_BUILD ${VITA_AUDIO} ${VITA_GRAPHICS} ${VITA_UTILITY} )
 
 				# These will remain separate for now..
@@ -141,7 +142,7 @@ if (VITA_RELEASE)
 #Build Daedalus Library
   include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/Config/Release ${PROJECT_SOURCE_DIR}/SysPosix/Include)
   add_definitions(-DDAEDALUS_VITA )
-  add_library(daedalus.lib STATIC ${BUILD} ${VITA_BUILD} ${POSIX_BUILD} )
+  add_library(daedalus.lib STATIC ${BUILD} ${VITA_POSIX} ${VITA_BUILD})
   add_executable(daedalus ${VITA_MAIN})
   target_link_libraries(daedalus daedalus.lib -lstdc++ -lpthread -lz -lm -lc -lg)
 
