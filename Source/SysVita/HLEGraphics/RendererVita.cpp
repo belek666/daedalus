@@ -2,11 +2,11 @@
 
 #include "RendererVita.h"
 
-/*
+
 BaseRenderer *gRenderer = nullptr;
-RendererVita *gRendererVita = nullptr;
+//RendererVita *gRendererVita = nullptr;
 
-
+/*
 bool CreateRenderer()
 {
   gRendererVita = new RendererVita();
