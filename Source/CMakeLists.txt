@@ -90,8 +90,9 @@ project (DaedalusX64)
 
         set (VITA_AUDIO SysVita/HLEAudio/AudioPluginVita.cpp)
         set (VITA_GRAPHICS SysVita/HLEGraphics/GraphicsPluginVita.cpp SysVita/HLEGraphics/RendererVita.cpp)
+				set (VITA_UTILITY SysVita/Utility/ThreadVita.cpp)
 				set (VITA_MAIN SysVita/main.cpp)
-			  set (VITA_BUILD ${VITA_AUDIO} ${VITA_GRAPHICS})
+			  set (VITA_BUILD ${VITA_AUDIO} ${VITA_GRAPHICS} ${VITA_UTILITY} )
 
 				# These will remain separate for now..
 				set (LINUX_AUDIO SysPosix/HLEAudio/AudioPluginLinux.cpp)
