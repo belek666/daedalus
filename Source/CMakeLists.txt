@@ -11,12 +11,14 @@
 
 cmake_minimum_required(VERSION 3.7)
 set(CMAKE_CXX_STANDARD 14)
+set (buildtype $ENV{BUILDTYPE})
+set (platform $ENV{PLATFORM})
 project (DaedalusX64)
 
 				#Default Files for build
 				set (BASE_FILES StdAfx.cpp)
 				set (CONFIG_FILES Config/ConfigOptions.cpp)
-				set (CORE_FILES Core/Cheats.cpp Core/CPU.cpp Core/DMA.cpp Core/Dynamo.cpp Core/FlashMem.cpp Core/Interpret.cpp Core/Interrupts.cpp Core/JpegTask.cpp Core/Memory.cpp Core/PIF.cpp Core/R4300.cpp Core/ROM.cpp Core/ROMBuffer.cpp Core/ROMImage.cpp Core/RomSettings.cpp Core/RSP_HLE.cpp Core/Save.cpp Core/SaveState.cpp Core/TLB.cpp)
+				set (CORE_FILES Core/Cheats.cpp Core/CPU.cpp Core/DMA.cpp Core/Dynamo.cpp Core/FlashMem.cpp Core/Interpret.cpp Core/Interrupts.cpp Core/JpegTask.cpp Core/Memory.cpp Core/PIF.cpp Core/R4300.cpp Core/Registers.cpp Core/ROM.cpp Core/ROMBuffer.cpp Core/ROMImage.cpp Core/RomSettings.cpp Core/RSP_HLE.cpp Core/Save.cpp Core/SaveState.cpp Core/TLB.cpp)
 				set (DEBUG_FILES Debug/DebugConsoleImpl.cpp Debug/DebugLog.cpp Debug/Dump.cpp)
 				set (DYNAREC_FILES DynaRec/BranchType.cpp DynaRec/DynaRecProfile.cpp DynaRec/Fragment.cpp DynaRec/FragmentCache.cpp DynaRec/IndirectExitMap.cpp DynaRec/StaticAnalysis.cpp DynaRec/TraceRecorder.cpp)
 				set (GRAPHICS_FILES Graphics/ColourValue.cpp Graphics/PngUtil.cpp Graphics/TextureTransform.cpp)
@@ -30,7 +32,6 @@ project (DaedalusX64)
 				set (TEST_FILES Test/BatchTest.cpp)
 				set (UTILITY_FILES Utility/CRC.cpp Utility/DataSink.cpp Utility/FastMemcpy.cpp  Utility/FramerateLimiter.cpp Utility/Hash.cpp Utility/IniFile.cpp Utility/MemoryHeap.cpp Utility/Preferences.cpp Utility/PrintOpCode.cpp Utility/Profiler.cpp Utility/ROMFile.cpp Utility/ROMFileCache.cpp Utility/ROMFileCompressed.cpp Utility/ROMFileMemory.cpp Utility/ROMFileUncompressed.cpp Utility/Stream.cpp Utility/StringUtil.cpp Utility/Synchroniser.cpp Utility/Timer.cpp  Utility/Translate.cpp Utility/ZLibWrapper.cpp)
 				set (UNKNOWN_FILES Utility/FastMemcpy_test.cpp Utility/MemoryPool.cpp)
-        set (DEBUG_ONLY Core/Registers.cpp)
 				set (BUILD ${BASE_FILES} ${CONFIG_FILES} ${CORE_FILES} ${DEBUG_FILES} ${DYNAREC_FILES} ${GRAPHICS_FILES} ${HLEAUDIO_FILES} ${HLEGRAPHICS_FILES} ${INTERFACE_FILES} ${MATH_FILES} ${OSHLE_FILES} ${PLUGIN_FILES} ${SYSTEM_FILES} ${TEST_FILES} ${UTILITY_FILES})
 
 
@@ -40,10 +41,11 @@ project (DaedalusX64)
 				set (PSP_DYNAREC_FILES SysPSP/DynaRec/AssemblyWriterPSP.cpp SysPSP/DynaRec/AssemblyUtilsPSP.cpp SysPSP/DynaRec/CodeBufferManagerPSP.cpp SysPSP/DynaRec/CodeGeneratorPSP.cpp SysPSP/DynaRec/DynaRecStubs.S SysPSP/DynaRec/N64RegisterCachePSP.cpp)
 				set (PSP_GRAPHICS_FILES SysPSP/Graphics/DrawText.cpp SysPSP/Graphics/GraphicsContext.cpp SysPSP/Graphics/NativeTexturePSP.cpp SysPSP/Graphics/VideoMemoryManager.cpp SysPSP/Graphics/intraFont/intraFont.c SysPSP/Graphics/intraFont/libccc.c)
 				set (PSP_HLEAUDIO_FILES SysPSP/HLEAudio/AudioPluginPSP.cpp)
-				set (PSP_HLEGRAPHICS_FILES SysPSP/HLEGraphics/Blender.cpp SysPSP/HLEGraphics/BlendModes.cpp SysPSP/HLEGraphics/ColourAdjuster.cpp SysPSP/HLEGraphics/ConvertVertices.S SysPSP/HLEGraphics/DisplayListDebugger.cpp SysPSP/HLEGraphics/GraphicsPluginPSP.cpp SysPSP/HLEGraphics/RendererPSP.cpp SysPSP/HLEGraphics/Combiner/BlendConstant.cpp SysPSP/HLEGraphics/Combiner/CombinerExpression.cpp SysPSP/HLEGraphics/Combiner/CombinerTree.cpp SysPSP/HLEGraphics/Combiner/RenderSettings.cpp SysPSP/HLEGraphics/TnLVFPU.S SysPSP/HLEGraphics/VectorClipping.S)
+				set (PSP_HLEGRAPHICS_FILES SysPSP/HLEGraphics/Blender.cpp SysPSP/HLEGraphics/BlendModes.cpp SysPSP/HLEGraphics/ColourAdjuster.cpp SysPSP/HLEGraphics/ConvertVertices.S SysPSP/HLEGraphics/DisplayListDebugger.cpp SysPSP/HLEGraphics/GraphicsPluginPSP.cpp SysPSP/HLEGraphics/RendererPSP.cpp SysPSP/HLEGraphics/Combiner/BlendConstant.cpp SysPSP/HLEGraphics/Combiner/CombinerExpression.cpp SysPSP/HLEGraphics/Combiner/CombinerTree.cpp SysPSP/HLEGraphics/Combiner/RenderSettings.cpp
+						SysPSP/HLEGraphics/TnLVFPU.S SysPSP/HLEGraphics/VectorClipping.S)
 				set (PSP_INPUTMANAGER_FILES SysPSP/Input/InputManagerPSP.cpp)
 				set (PSP_KERNELBUTTON_FILES SysPSP/PRX/KernelButtons/imposectrl.S)
-                set (PSP_MEDIAENGINEFILES SysPSP/PRX/MediaEngine/me.c SysPSP/PRX/MediaEngine/MediaEngine.S )
+        set (PSP_MEDIAENGINEFILES SysPSP/PRX/MediaEngine/me.c SysPSP/PRX/MediaEngine/MediaEngine.S )
 				set (PSP_UI_FILES SysPSP/UI/AboutComponent.cpp SysPSP/UI/AdjustDeadzoneScreen.cpp SysPSP/UI/AdvancedOptionsScreen.cpp SysPSP/UI/CheatOptionsScreen.cpp SysPSP/UI/ColourPulser.cpp SysPSP/UI/Dialogs.cpp SysPSP/UI/GlobalSettingsComponent.cpp SysPSP/UI/MainMenuScreen.cpp SysPSP/UI/PauseOptionsComponent.cpp SysPSP/UI/PauseScreen.cpp SysPSP/UI/RomPreferencesScreen.cpp SysPSP/UI/RomSelectorComponent.cpp SysPSP/UI/SavestateSelectorComponent.cpp SysPSP/UI/SelectedRomComponent.cpp SysPSP/UI/SplashScreen.cpp SysPSP/UI/UICommand.cpp SysPSP/UI/UIComponent.cpp SysPSP/UI/UIContext.cpp SysPSP/UI/UIElement.cpp SysPSP/UI/UIScreen.cpp SysPSP/UI/UISetting.cpp)
 				set (PSP_UTILITY_FILES SysPSP/Utility/AtomicPrimitives.S SysPSP/Utility/BatteryPSP.cpp SysPSP/Utility/Buttons.cpp SysPSP/Utility/DebugMemory.cpp SysPSP/Utility/DisableFPUExceptions.S SysPSP/Utility/exception.cpp SysPSP/Utility/FastMemcpyPSP.cpp SysPSP/Utility/IOPSP.cpp SysPSP/Utility/JobManager.cpp SysPSP/Utility/ModulePSP.cpp SysPSP/Utility/ThreadPSP.cpp SysPSP/Utility/TimingPSP.cpp SysPSP/Utility/VolatileMemPSP.cpp)
 				set (GPROF_SRCS SysPSP/Debug/prof.c SysPSP/Debug/mcount.S )
@@ -100,64 +102,45 @@ project (DaedalusX64)
 				set (MAC_AUDIO SysPosix/HLEAudio/AudioPluginOSX.cpp)
 
 
-if (PSP_RELEASE)
-	message("PSP Release Build..")
-	add_definitions("-DNDEBUG  -march=allegrex -O2 -msingle-float -mfix-r4000 -Wall ")
+	if (${buildtype} STREQUAL "RELEASE")
+		message("${platform} Release build")
+		include_directories(${PROJECT_SOURCE_DIR}/Config/Release)
+		add_definitions ("-DNDEBUG -O2")
+	elseif(${buildtype} STREQUAL "DEBUG")
+				message("${platform} Debug build")
+		include_directories(${PROJECT_SOURCE_DIR}/Config/Dev)
+		add_definitions("-g -D_DEBUG -Wall")
+	endif ()
+
+
+if (PSP)
+	add_definitions("-march=allegrex -msingle-float -mfix-r4000")
 	add_compile_options(-DPSP_LARGE_MEMORY=1 -DPSP_FW_VERSION=661)
 	add_definitions(-DDAEDALUS_PSP)
-	include_directories(${PROJECT_SOURCE_DIR}/Config/Release)
 	add_library(pspkubridge STATIC IMPORTED)
-set_property(TARGET pspkubridge PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/SysPSP/Include/lib/libpspkubridge.a)
+	set_property(TARGET pspkubridge PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/SysPSP/Include/lib/libpspkubridge.a)
 	include_directories(BEFORE ${PROJECT_SOURCE_DIR}/SysPSP/Include)
 	add_library(daedalus STATIC ${BUILD} ${PSP_BUILD})
 	add_executable(daedalus.elf ${PSP_MAIN_FILES})
 	set_target_properties(daedalus.elf PROPERTIES LINK_FLAGS "-specs=${PSPSDK}/lib/prxspecs -Wl,-q,-T${PSPSDK}/lib/linkfile.prx ${PSPSDK}/lib/prxexports.o -L${PSPSDK}/lib")
 	target_include_directories(daedalus.elf PUBLIC /usr/local/pspdev/psp/sdk/include )
 	target_link_libraries(daedalus.elf daedalus -lstdc++ -lpsppower -lpspgu -lpspaudiolib -lpspaudio -lpsprtc -lpng -lz -lc -lg -lm -lpspfpu pspkubridge ${PSPSDK_LIBS})
-endif (PSP_RELEASE)
+endif (PSP)
 
+if (VITA)
+		include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/SysPosix/Include)
+	  add_definitions(-DDAEDALUS_VITA )
+	  add_library(daedalus.lib STATIC ${BUILD} ${VITA_POSIX} ${VITA_BUILD})
+	  add_executable(daedalus ${VITA_MAIN})
+	  target_link_libraries(daedalus daedalus.lib -lstdc++ -lpthread -lz -lm -lc -lg)
+endif (VITA)
 
-
-#Only difference between PSP Release and Debug is the definitions and Config Dev File - Try and merge
-
-if (PSP_DEBUG)
-	message("PSP Debug Build..")
-	include_directories(${PROJECT_SOURCE_DIR}/Config/Dev)
-	add_definitions("-g -O2 -fno-omit-frame-pointer -G0 -D_DEBUG -MD -Wall")
-	add_compile_options(-DPSP_FW_VERSION=661)
-	add_definitions(-DDAEDALUS_PSP )
-	add_library(pspkubridge STATIC IMPORTED)
-set_property(TARGET pspkubridge PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/SysPSP/Include/lib/libpspkubridge.a)
-	include_directories(BEFORE ${PROJECT_SOURCE_DIR}/SysPSP/Include)
-	add_library(daedalus STATIC ${BUILD} ${PSP_BUILD} ${DEBUG_ONLY})
-	add_executable(daedalus.elf ${PSP_MAIN_FILES})
-	set_target_properties(daedalus.elf PROPERTIES LINK_FLAGS "-specs=${PSPSDK}/lib/prxspecs -Wl,-q,-T${PSPSDK}/lib/linkfile.prx ${PSPSDK}/lib/prxexports.o -L${PSPSDK}/lib")
-	target_include_directories(daedalus.elf PUBLIC /usr/local/pspdev/psp/sdk/include )
-	target_link_libraries(daedalus.elf daedalus -lstdc++ -lpsppower -lpspgu -lpspaudiolib -lpspaudio -lpsprtc -lpng -lz -lc -lg -lm -lpspfpu pspkubridge ${PSPSDK_LIBS})
-endif (PSP_DEBUG)
-
-if (VITA_RELEASE)
-	message("PSVIta Release Build..")
-
-#Build Daedalus Library
-  include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/Config/Release ${PROJECT_SOURCE_DIR}/SysPosix/Include)
-  add_definitions(-DDAEDALUS_VITA )
-  add_library(daedalus.lib STATIC ${BUILD} ${VITA_POSIX} ${VITA_BUILD})
-  add_executable(daedalus ${VITA_MAIN})
-  target_link_libraries(daedalus daedalus.lib -lstdc++ -lpthread -lz -lm -lc -lg)
-
-endif (VITA_RELEASE)
 
 if (LINUX_RELEASE)
 
 add_definitions("-DNDEBUG -O3")
 include_directories(${PROJECT_SOURCE_DIR/HLEGraphics})
 include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/Config/Release ${PROJECT_SOURCE_DIR}/SysPosix/Include)
-
-endif (LINUX_RELEASE)
-
-if (LINUX_RELEASE)
-
 
 		message("Linux Release Build..")
 

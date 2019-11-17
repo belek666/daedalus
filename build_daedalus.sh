@@ -1,4 +1,6 @@
 #!/bin/bash
+export PLATFORM=$( echo $1 | cut -d "_" -f1 )
+export BUILDTYPE=$( echo $1 | cut -d "_" -f2- )
 
 
 function usage() {
@@ -58,43 +60,31 @@ function buildPSP() {
   #No point continuing if the elf file doesn't exist
   if [ -f "$PWD/daedalus.elf" ]; then
     #Pack PBP
-  psp-fixup-imports daedalus.elf
-  mksfoex -d MEMSIZE=1 DaedalusX64 PARAM.SFO
-  psp-prxgen daedalus.elf daedalus.prx
-  cp ../Source/SysPSP/Resources/eboot_icons/* "$PWD"
-  pack-pbp EBOOT.PBP PARAM.SFO icon0.png NULL NULL pic1.png NULL daedalus.prx NULL
-  finalPrep
-
-
-fi
-    }
-
+    psp-fixup-imports daedalus.elf
+    mksfoex -d MEMSIZE=1 DaedalusX64 PARAM.SFO
+    psp-prxgen daedalus.elf daedalus.prx
+    cp ../Source/SysPSP/Resources/eboot_icons/* "$PWD"
+    pack-pbp EBOOT.PBP PARAM.SFO icon0.png NULL NULL pic1.png NULL daedalus.prx NULL
+    finalPrep
+  fi
+                    }
 ## Main loop
 
-
-if [ "$1" = "PSP_RELEASE" ] || [ "$1" = "PSP_DEBUG" ]; then
+if [ $PLATFORM = "PSP" ]; then
   pre_prep
     mkdir "$PWD/daedbuild"
     cd "$PWD/daedbuild"
-cmake -DCMAKE_TOOLCHAIN_FILE=../Tools/psptoolchain.cmake -D"$1=1" ../Source
+cmake -DCMAKE_TOOLCHAIN_FILE=../Tools/psptoolchain.cmake -DPSP=1 ../Source
 buildPSP
 
-elif [ "$1" = "LINUX_RELEASE" ] || [ "$1" = "MAC_RELEASE" ]; then
-  pre_prep
-  mkdir "$PWD/daedbuild"
-  cd "$PWD/daedbuild"
-  cmake -D"$1=1" ../Source
-make
-finalPrep
-cp daedalus ../DaedalusX64
-
-elif [ "$1" = "VITA_RELEASE" ]; then
+elif [ $PLATFORM = "VITA" ]; then
 	pre_prep
 	mkdir "$PWD/daedbuild"
 	cd "$PWD/daedbuild"
-	cmake -DCMAKE_TOOLCHAIN_FILE=/usr/local/vitasdk/share/vita.toolchain.cmake -D $"$1=1" ../Source
-	make
+	cmake -DCMAKE_TOOLCHAIN_FILE=$VITASDK/share/vita.toolchain.cmake -DVITA=1 ../Source
+	make -j8
 	finalPrep
+
 else
 usage
 fi
