@@ -64,7 +64,7 @@ static void error_callback(int error, const char* description)
 }
 
 
-extern bool initgl();
+//extern bool initgl();
 bool GraphicsContextGL::Initialise()
 {
 
@@ -94,10 +94,10 @@ bool GraphicsContextGL::Initialise()
 
 	SDL_GL_SetSwapInterval(1);
 
-	
+
 //ClearColBufferAndDepth(0,0,0,0);
 UpdateFrame(false);
-return initgl();
+//return initgl();
 }
 
 

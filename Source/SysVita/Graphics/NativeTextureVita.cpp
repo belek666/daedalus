@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdlib.h>
 #include <string.h>
 #include <png.h>
+#include <GL/gl.h>
 
 static const u32 kPalette4BytesRequired = 16 * sizeof( NativePf8888 );
 static const u32 kPalette8BytesRequired = 256 * sizeof( NativePf8888 );

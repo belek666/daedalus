@@ -85,6 +85,9 @@ class CNativeTexture : public CRefCounted
 		GLuint				mTextureId;
 #endif
 
+#ifdef DAEDALUS_VITA
+u32 mTextureId;
+#endif
 #ifdef DAEDALUS_PSP
 		v2					mScale;
 		bool				mIsDataVidMem;
