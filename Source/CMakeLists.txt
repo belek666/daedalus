@@ -111,6 +111,10 @@ project (DaedalusX64)
 				message("${platform} Debug build")
 		include_directories(${PROJECT_SOURCE_DIR}/Config/Dev)
 		add_definitions("-g -D_DEBUG -Wall")
+	elseif(${buildtype} STREQUAL "PROFILE")
+			message("${platform} Profiler build")
+					include_directories(${PROJECT_SOURCE_DIR}/Config/profile)
+				add_definitions("-g -D_DEBUG -Wall")
 	endif ()
 
 
