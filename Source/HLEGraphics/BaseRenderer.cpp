@@ -60,7 +60,7 @@ struct TempVerts
 
 	~TempVerts()
 	{
-#ifdef DAEDALUS_GL
+#ifdef DAEDALUS_GL || DAEDALUS_VITA
 		free(Verts);
 #endif
 	}
@@ -71,7 +71,7 @@ struct TempVerts
 #ifdef DAEDALUS_PSP
 		Verts = static_cast<DaedalusVtx*>(sceGuGetMemory(bytes));
 #endif
-#ifdef DAEDALUS_GL
+#ifdef DAEDALUS_GL || DAEDALUS_VITA
 		Verts = static_cast<DaedalusVtx*>(malloc(bytes));
 #endif
 
@@ -1950,7 +1950,7 @@ void BaseRenderer::PrepareTexRectUVs(TexCoord * puv0, TexCoord * puv1)
 	if (rdp_tile.mirror_s)	size_x *= 2;
 	if (rdp_tile.mirror_t)	size_y *= 2;
 
-#ifdef DAEDALUS_GL
+#ifdef DAEDALUS_GL || DAEDALUS_VITA
 	// If using shift, we need to take it into account here.
 	offset.s = ApplyShift(offset.s, rdp_tile.shift_s);
 	offset.t = ApplyShift(offset.t, rdp_tile.shift_t);
