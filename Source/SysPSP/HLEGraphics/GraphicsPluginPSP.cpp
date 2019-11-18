@@ -283,7 +283,7 @@ CGraphicsPlugin * CreateGraphicsPlugin()
 	DBGConsole_Msg( 0, "Initialising Graphics Plugin [CPSP]" );
 #endif
 
-    CGraphicsPluginImpl * plugin = nullptr;
+    CGraphicsPluginImpl * plugin = new CGraphicsPluginImpl;
 	if( !plugin->Initialise() )
 	{
 		delete plugin;
