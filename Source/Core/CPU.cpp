@@ -778,18 +778,16 @@ u32	CPU_ProduceRegisterHash()
 	if ( DAED_SYNC_MASK & DAED_SYNC_REG_GPR )
 	{
 		hash = murmur2_hash( (u8*)&(gCPUState.CPU[0]), sizeof( gCPUState.CPU ), hash );
-	}
-
-	if ( DAED_SYNC_MASK & DAED_SYNC_REG_CCR0 )
+	}	
+	else if ( DAED_SYNC_MASK & DAED_SYNC_REG_CCR0 )
 	{
 		hash = murmur2_hash( (u8*)&(gCPUState.CPUControl[0]), sizeof( gCPUState.CPUControl ), hash );
 	}
-
-	if ( DAED_SYNC_MASK & DAED_SYNC_REG_CPU1 )
+	else if ( DAED_SYNC_MASK & DAED_SYNC_REG_CPU1 )
 	{
 		hash = murmur2_hash( (u8*)&(gCPUState.FPU[0]), sizeof( gCPUState.FPU ), hash );
 	}
-	if ( DAED_SYNC_MASK & DAED_SYNC_REG_CCR1 )
+	else if ( DAED_SYNC_MASK & DAED_SYNC_REG_CCR1 )
 	{
 		hash = murmur2_hash( (u8*)&(gCPUState.FPUControl[0]), sizeof( gCPUState.FPUControl ), hash );
 	}
