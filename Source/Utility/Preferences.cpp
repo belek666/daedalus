@@ -47,6 +47,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 static const EAudioPluginMode      kDefaultAudioPluginMode      = APM_DISABLED;
 static const ETextureHashFrequency kDefaultTextureHashFrequency = THF_DISABLED;
 #elif defined(DAEDALUS_PS2)
+static const EAudioPluginMode      kDefaultAudioPluginMode = APM_ENABLED_SYNC;
 static const ETextureHashFrequency kDefaultTextureHashFrequency = THF_DISABLED;
 #else
 static const EAudioPluginMode      kDefaultAudioPluginMode      = APM_ENABLED_SYNC;
