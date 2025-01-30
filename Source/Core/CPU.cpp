@@ -676,8 +676,9 @@ void CPU_HANDLE_COUNT_INTERRUPT()
 
 			FramerateLimiter_Limit();
 #if defined(DAEDALUS_W32) || defined(DAEDALUS_PS2)
-			if (gAudioPlugin != nullptr)
+			if (gAudioPlugin != nullptr) {
 				gAudioPlugin->Update(false);
+			}
 #endif
 			Memory_MI_SetRegisterBits(MI_INTR_REG, MI_INTR_VI);
 			R4300_Interrupt_UpdateCause3();

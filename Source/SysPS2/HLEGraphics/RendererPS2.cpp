@@ -59,13 +59,19 @@ static float coord_width = 300.0f;
 static float coord_height = 300.0f;
 static short coord_x = 640 / 2;
 static short coord_y = 480 / 2;
-float coord_near = 0.0f;
-float coord_far = GSZMAX;
+static float coord_near = 1.0f;
+static float coord_far = 65535.0f;
 extern u32 gsZMax;
 
 int gsShading = 0;
 int gsBlend = GS_SETTING_OFF;
 int gsFogEnable = 0;
+
+static float toScreen(float z, float zmin, float zmax, float nearz, float farz) {
+	float cz = (-zmax * nearz + zmin * farz) / (-nearz + farz);
+	float az  = farz * nearz * (-zmin + zmax) / (-nearz + farz);
+	return z * cz + az;
+}
 
 void gsViewport(int x, int y, int width, int height)
 {
@@ -91,8 +97,7 @@ void gsViewport(int x, int y, int width, int height)
 
 inline void gsDepthRange(float nearVal, float farVal)
 {
-	//printf("depth mode %d %d\n", nearVal, farVal);
-	coord_near = farVal * 2;
+	coord_near = farVal;
 	coord_far = nearVal;
 }
 
@@ -210,11 +215,11 @@ static inline u32 lzw(u32 val)
 static inline void gsKit_set_tw_th(const GSTEXTURE* Texture, int* tw, int* th)
 {
 	*tw = 31 - (lzw(Texture->Width) + 1);
-	if (Texture->Width > (1 << *tw))
+	if (Texture->Width > (u32)(1 << *tw))
 		(*tw)++;
 
 	*th = 31 - (lzw(Texture->Height) + 1);
-	if (Texture->Height > (1 << *th))
+	if (Texture->Height > (u32)(1 << *th))
 		(*th)++;
 }
 
@@ -280,7 +285,6 @@ void _gsKit_prim_sprite_texture_3d(GSGLOBAL* gsGlobal, const GSTEXTURE* Texture,
 {
 	gsKit_set_texfilter(gsGlobal, Texture->Filter);
 
-	u64* p_store;
 	u64* p_data;
 	int qsize = 4;
 	int bsize = 64;
@@ -298,7 +302,7 @@ void _gsKit_prim_sprite_texture_3d(GSGLOBAL* gsGlobal, const GSTEXTURE* Texture,
 	int iv1 = gsKit_float_to_int_v(Texture, v1);
 	int iv2 = gsKit_float_to_int_v(Texture, v2);
 
-	p_store = p_data = (u64*)gsKit_heap_alloc(gsGlobal, qsize, bsize, GSKIT_GIF_PRIM_SPRITE_TEXTURED);
+	p_data = (u64*)gsKit_heap_alloc(gsGlobal, qsize, bsize, GSKIT_GIF_PRIM_SPRITE_TEXTURED);
 
 	*p_data++ = GIF_TAG_SPRITE_TEXTURED(0);
 	*p_data++ = GIF_TAG_SPRITE_TEXTURED_REGS(gsGlobal->PrimContext);
@@ -336,7 +340,6 @@ void _gsKit_prim_triangle_goraud_texture_3d(GSGLOBAL* gsGlobal, GSTEXTURE* Textu
 	u64 color1, u64 color2, u64 color3, u8 fog1, u8 fog2, u8 fog3)
 {
 	gsKit_set_texfilter(gsGlobal, Texture->Filter);
-	u64* p_store;
 	u64* p_data;
 	int qsize = 6;
 	int bsize = 96;
@@ -352,7 +355,7 @@ void _gsKit_prim_triangle_goraud_texture_3d(GSGLOBAL* gsGlobal, GSTEXTURE* Textu
 	int iy3 = (int)(y3 * 16.0f) + gsGlobal->OffsetY;
 
 	int xymax = (int)(4095.9375f * 16.0f);
-	int zmax = (gsZMax - 0xFF) / 2;
+	//int zmax = (gsZMax - 0xFF) / 2;
 
 	if (ix1 > xymax || ix1 < 0 || ix2 > xymax || ix2 < 0 || ix3 > xymax || ix3 < 0)
 		return;
@@ -373,7 +376,7 @@ void _gsKit_prim_triangle_goraud_texture_3d(GSGLOBAL* gsGlobal, GSTEXTURE* Textu
 	t2._f32 = v2;
 	t3._f32 = v3;
 
-	p_store = p_data = (u64 *)gsKit_heap_alloc(gsGlobal, qsize, bsize, GSKIT_GIF_PRIM_TRIANGLE_TEXTURED);
+	p_data = (u64 *)gsKit_heap_alloc(gsGlobal, qsize, bsize, GSKIT_GIF_PRIM_TRIANGLE_TEXTURED);
 
 	*p_data++ = GIF_TAG_TRIANGLE_GORAUD_TEXTURED_Q(0);
 	*p_data++ = GIF_TAG_TRIANGLE_GORAUD_TEXTURED_Q_REGS(gsGlobal->PrimContext);
@@ -428,7 +431,7 @@ void _gsKit_prim_triangle_gouraud_3d(GSGLOBAL* gsGlobal, float x1, float y1, int
 	int iy3 = (int)(y3 * 16.0f) + gsGlobal->OffsetY;
 
 	int xymax = (int)(4095.9375f * 16.0f);
-	int zmax = (gsZMax - 0xFF) / 2;
+	//int zmax = (gsZMax - 0xFF) / 2;
 
 	if (ix1 > xymax || ix1 < 0 || ix2 > xymax || ix2 < 0 || ix3 > xymax || ix3 < 0)
 		return;
@@ -465,7 +468,6 @@ void _gsKit_prim_triangle_strip_texture_3d(GSGLOBAL* gsGlobal, GSTEXTURE* Textur
 	float* TriStrip, int segments, u64 color)
 {
 	gsKit_set_texfilter(gsGlobal, Texture->Filter);
-	u64* p_store;
 	u64* p_data;
 	int qsize = 3 + (segments * 2);
 	int count;
@@ -483,7 +485,7 @@ void _gsKit_prim_triangle_strip_texture_3d(GSGLOBAL* gsGlobal, GSTEXTURE* Textur
 		vertexdata[count + 4] = gsKit_float_to_int_v(Texture, *TriStrip++);
 	}
 
-	p_store = p_data = (u64*)gsKit_heap_alloc(gsGlobal, qsize, (qsize * 16), GIF_AD);
+	p_data = (u64*)gsKit_heap_alloc(gsGlobal, qsize, (qsize * 16), GIF_AD);
 
 	*p_data++ = GIF_TAG_AD(qsize);
 	*p_data++ = GIF_AD;
@@ -521,14 +523,9 @@ void _gsKit_prim_triangle_strip_texture_3d(GSGLOBAL* gsGlobal, GSTEXTURE* Textur
 	}
 }
 
-#define GS_X(v)		(((v.x/v.w) * coord_width) + coord_x)
-#define GS_Y(v)		(-((v.y/v.w) * coord_height) + coord_y)
-#define GS_Z(v)		(int)((v.z/v.w) * (gsZMax - 0xFF)/2)
-
-//#define GS_Z(v)		(int)(-v.z * (coord_far - coord_near) + coord_near)
-
-//#define GS_Z(v)     (int)(-(coord_far - coord_near) / 2 * ((v.z / v.w) - 1) /*+ (coord_near + coord_far) / 2*/)
-//#define GS_Z(v)		(u32)(v.z * 16.0f)
+#define GS_X(v)		(v.x * coord_width / v.w + coord_x)
+#define GS_Y(v)		(-v.y * coord_height / v.w + coord_y)
+#define GS_Z(v)		(int)(v.z / v.w)
 
 #define GS_U(u)		((u + u_offset) * u_scale)
 #define GS_V(v)		((v + v_offset) * v_scale)
@@ -609,10 +606,18 @@ void DrawPrims(DaedalusVtx* p_vertices, u32 num_vertices, u32 prim_type, bool te
 				q3._f32 /= out_vect[2].w;
 			}
 
-			color[0] = GS_SETREG_RGBAQ(p_vertices[i + 0].Colour.GetR(), p_vertices[i + 0].Colour.GetG(), p_vertices[i + 0].Colour.GetB(), ((u32)p_vertices[i + 0].Colour.GetA() + 1) / 2, q1._u32);
-			color[1] = GS_SETREG_RGBAQ(p_vertices[i + 1].Colour.GetR(), p_vertices[i + 1].Colour.GetG(), p_vertices[i + 1].Colour.GetB(), ((u32)p_vertices[i + 1].Colour.GetA() + 1) / 2, q2._u32);
-			color[2] = GS_SETREG_RGBAQ(p_vertices[i + 2].Colour.GetR(), p_vertices[i + 2].Colour.GetG(), p_vertices[i + 2].Colour.GetB(), ((u32)p_vertices[i + 2].Colour.GetA() + 1) / 2, q3._u32);
-
+			color[0] = GS_SETREG_RGBAQ((p_vertices[i + 0].Colour.GetR() + 1) / 2, 
+				(p_vertices[i + 0].Colour.GetG() + 1) / 2, 
+				(p_vertices[i + 0].Colour.GetB() + 1) / 2, 
+				(p_vertices[i + 0].Colour.GetA() + 1) / 2, q1._u32);
+			color[1] = GS_SETREG_RGBAQ((p_vertices[i + 1].Colour.GetR() + 1) / 2, 
+				(p_vertices[i + 1].Colour.GetG() + 1) / 2, 
+				(p_vertices[i + 1].Colour.GetB() + 1) / 2, 
+				(p_vertices[i + 1].Colour.GetA() + 1) / 2, q2._u32);
+			color[2] = GS_SETREG_RGBAQ((p_vertices[i + 2].Colour.GetR() + 1) / 2, 
+				(p_vertices[i + 2].Colour.GetG() + 1) / 2, 
+				(p_vertices[i + 2].Colour.GetB() + 1) / 2, 
+				(p_vertices[i + 2].Colour.GetA() + 1) / 2, q3._u32);
 			fog[0] = p_vertices[i + 0].Colour.GetA();
 			fog[1] = p_vertices[i + 1].Colour.GetA();
 			fog[2] = p_vertices[i + 2].Colour.GetA();
@@ -623,35 +628,13 @@ void DrawPrims(DaedalusVtx* p_vertices, u32 num_vertices, u32 prim_type, bool te
 			gsKit_prim_line_3d(gsGlobal, GS_X(out_vect[1]), GS_Y(out_vect[1]), GS_Z(out_vect[1]), GS_X(out_vect[2]), GS_Y(out_vect[2]), GS_Z(out_vect[2]), color[1]);
 			gsKit_prim_line_3d(gsGlobal, GS_X(out_vect[2]), GS_Y(out_vect[2]), GS_Z(out_vect[2]), GS_X(out_vect[0]), GS_Y(out_vect[0]), GS_Z(out_vect[0]), color[2]);
 #else
-			//if (out_vect[0].w == 0 || out_vect[1].w == 0 || out_vect[2].w == 0)
-			//	continue;
 
-			int z1, z2, z3;
-			f32 zf1, zf2, zf3;
-
-			zf1 = (-out_vect[0].z / out_vect[0].w);
-			zf2 = (-out_vect[1].z / out_vect[1].w);
-			zf3 = (-out_vect[2].z / out_vect[2].w);
-
-			z1 = (int)(zf1 * 0xFFFF);
-			z2 = (int)(zf2 * 0xFFFF);
-			z3 = (int)(zf3 * 0xFFFF);
-
-			/*if (z1 >= 0 || z2 >= 0 || z3 >= 0)
-				return;*/
-
-			//printf("%d %d %d \n", z1, z2, z3);
+			out_vect[0].z = toScreen(out_vect[0].z, 1.0f, 16777215.0f, coord_near, coord_far);
+			out_vect[1].z = toScreen(out_vect[1].z, 1.0f, 16777215.0f, coord_near, coord_far);
+			out_vect[2].z = toScreen(out_vect[2].z, 1.0f, 16777215.0f, coord_near, coord_far);
 
 			if (textured)
 			{
-				/*u[0] = GS_U(p_vertices[i + 0].Texture.x) / CurrTex->Width * q1._f32;
-				u[1] = GS_U(p_vertices[i + 1].Texture.x) / CurrTex->Width * q2._f32;
-				u[2] = GS_U(p_vertices[i + 2].Texture.x) / CurrTex->Width * q3._f32;
-
-				v[0] = GS_V(p_vertices[i + 0].Texture.y) / CurrTex->Height * q1._f32;
-				v[1] = GS_V(p_vertices[i + 1].Texture.y) / CurrTex->Height * q2._f32;
-				v[2] = GS_V(p_vertices[i + 2].Texture.y) / CurrTex->Height * q3._f32;*/
-
 				u[0] = GS_U(p_vertices[i + 0].Texture.x) * q1._f32;
 				u[1] = GS_U(p_vertices[i + 1].Texture.x) * q2._f32;
 				u[2] = GS_U(p_vertices[i + 2].Texture.x) * q3._f32;
@@ -661,11 +644,11 @@ void DrawPrims(DaedalusVtx* p_vertices, u32 num_vertices, u32 prim_type, bool te
 				v[2] = GS_V(p_vertices[i + 2].Texture.y) * q3._f32;
 
 				_gsKit_prim_triangle_goraud_texture_3d(gsGlobal, CurrTex,
-					GS_X(out_vect[0]), GS_Y(out_vect[0]), z1,
+					GS_X(out_vect[0]), GS_Y(out_vect[0]), GS_Z(out_vect[0]),
 					u[0], v[0],
-					GS_X(out_vect[1]), GS_Y(out_vect[1]), z2,
+					GS_X(out_vect[1]), GS_Y(out_vect[1]), GS_Z(out_vect[1]),
 					u[1], v[1],
-					GS_X(out_vect[2]), GS_Y(out_vect[2]), z3,
+					GS_X(out_vect[2]), GS_Y(out_vect[2]), GS_Z(out_vect[2]),
 					u[2], v[2],
 					color[0], color[1], color[2], 
 					fog[0], fog[1], fog[2] );
@@ -673,23 +656,13 @@ void DrawPrims(DaedalusVtx* p_vertices, u32 num_vertices, u32 prim_type, bool te
 			else
 			{
 				_gsKit_prim_triangle_gouraud_3d(gsGlobal,
-					GS_X(out_vect[0]), GS_Y(out_vect[0]), z1,
-					GS_X(out_vect[1]), GS_Y(out_vect[1]), z2,
-					GS_X(out_vect[2]), GS_Y(out_vect[2]), z3,
+					GS_X(out_vect[0]), GS_Y(out_vect[0]), GS_Z(out_vect[0]),
+					GS_X(out_vect[1]), GS_Y(out_vect[1]), GS_Z(out_vect[1]),
+					GS_X(out_vect[2]), GS_Y(out_vect[2]), GS_Z(out_vect[2]),
 					color[0],
 					color[1],
 					color[2], fog[0], fog[1], fog[2]);
 			}
-
-
-			/*if (out_vect[0].z / out_vect[0].w > 1.0f || out_vect[1].z / out_vect[1].w > 1.0f || out_vect[2].z / out_vect[2].w > 1.0f)
-			{
-				printf("z1 %d %f %f\n", GS_Z(out_vect[0]), out_vect[0].z / out_vect[0].w, out_vect[0].w);
-				printf("z2 %d %f %f\n", GS_Z(out_vect[1]), out_vect[1].z / out_vect[1].w, out_vect[1].w);
-				printf("z3 %d %f %f\n", GS_Z(out_vect[2]), out_vect[2].z / out_vect[2].w, out_vect[2].w);
-			}*/
-
-			//printf("z1 %f z2 %f z3 %f\n", out_vect[0].z, out_vect[1].z, out_vect[2].z);
 #endif
 		}
 	}
@@ -1037,7 +1010,7 @@ inline void RendererPS2::RenderFog( DaedalusVtx * p_vertices, u32 num_vertices, 
 		gsKit_set_test(gsGlobal, GS_ZTEST_ON);
 		gsBlend = GS_SETTING_ON;
 		gsKit_set_test(gsGlobal, GS_ATEST_OFF);
-		gsKit_set_primalpha(gsGlobal, GS_SETREG_ALPHA(0, 1, 0, 1, 0), 0);
+		gsKit_set_primalpha(gsGlobal, GS_SETREG_ALPHA(0, 1, 0, 1, 128), 0);
 
 		u32 FogColor = mFogColour.GetColour();
 
@@ -1082,14 +1055,14 @@ void RendererPS2::RenderUsingCurrentBlendMode( DaedalusVtx * p_vertices, u32 num
 			{
 				ZFightingEnabled = true;
 				//sceGuDepthRange(65535, 80);
-				gsDepthRange(GSZMAX, 80.0f);
+				gsDepthRange(65535.0f, 1.01f);
 			}
 		}
 		else if (ZFightingEnabled)
 		{
 			ZFightingEnabled = false;
 			//sceGuDepthRange(65535, 0);
-			gsDepthRange(GSZMAX, 0.0f);
+			gsDepthRange(65535.0f, 1.0f);
 		}
 
 		// Enable or Disable ZBuffer test

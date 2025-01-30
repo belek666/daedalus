@@ -48,7 +48,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define DAEDALUS_ATTRIBUTE_PURE   __attribute__((pure))
 #define DAEDALUS_ATTRIBUTE_CONST   __attribute__((const))
 
-#define __has_feature(x) 0
+//#define __has_feature(x) 0
 
 #define DAEDALUS_PS2_USE_VU0
 #define USE_FILEXIO

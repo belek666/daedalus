@@ -63,96 +63,96 @@ enum PathMatch {
 
 typedef struct rootDirTocHeader {
 
- u16 length         __attribute__(  ( packed )  );
- u32 tocLBA         __attribute__(  ( packed )  );
- u32 tocLBA_bigend  __attribute__(  ( packed )  );
- u32 tocSize        __attribute__(  ( packed )  );
- u32 tocSize_bigend __attribute__(  ( packed )  );
- u8  dateStamp[ 8 ] __attribute__(  ( packed )  );
- u8  reserved [ 6 ] __attribute__(  ( packed )  );
- u8  reserved2      __attribute__(  ( packed )  );
- u8  reserved3      __attribute__(  ( packed )  );
+ u16 length         ;
+ u32 tocLBA         ;
+ u32 tocLBA_bigend  ;
+ u32 tocSize        ;
+ u32 tocSize_bigend ;
+ u8  dateStamp[ 8 ] ;
+ u8  reserved [ 6 ] ;
+ u8  reserved2      ;
+ u8  reserved3;      
 
-} rootDirTocHeader;
+} rootDirTocHeader __attribute__(  ( packed )  );
 
 typedef struct asciiDate {
 
- char	year      [ 4 ] __attribute__(  ( packed )  );
- char	month     [ 2 ] __attribute__(  ( packed )  );
- char	day       [ 2 ] __attribute__(  ( packed )  );
- char	hours     [ 2 ] __attribute__(  ( packed )  );
- char	minutes   [ 2 ] __attribute__(  ( packed )  );
- char	seconds   [ 2 ] __attribute__(  ( packed )  );
- char	hundreths [ 2 ] __attribute__(  ( packed )  );
- char	terminator[ 1 ] __attribute__(  ( packed )  );
+ char	year      [ 4 ] ;
+ char	month     [ 2 ] ;
+ char	day       [ 2 ] ;
+ char	hours     [ 2 ] ;
+ char	minutes   [ 2 ] ;
+ char	seconds   [ 2 ] ;
+ char	hundreths [ 2 ] ;
+ char	terminator[ 1 ] ;
 
-} asciiDate;
+} asciiDate __attribute__(  ( packed )  );
 
 typedef struct cdVolDesc {
 
- u8               m_FSType                      __attribute__(  ( packed )  );
- u8               m_VolID[ 5 ]                  __attribute__(  ( packed )  );
- u8               m_Reserved2                   __attribute__(  ( packed )  );
- u8               m_Reserved3                   __attribute__(  ( packed )  );
- u8               m_SysIDName[ 32 ]             __attribute__(  ( packed )  );
- u8               m_VolName  [ 32 ]             __attribute__(  ( packed )  );
- u8               m_Reserved5[  8 ]             __attribute__(  ( packed )  );
- u32              m_VolSize                     __attribute__(  ( packed )  );
- u32              m_VolSizeBE                   __attribute__(  ( packed )  );
- u8               m_EscapeSeq[3]                __attribute__(  ( packed )  );
- u8               m_Reserved6[ 29 ]             __attribute__(  ( packed )  );
- u32              m_Unknown1                    __attribute__(  ( packed )  );
- u32              m_Uunknown1BE                 __attribute__(  ( packed )  );
- u16              m_VolDescSize                 __attribute__(  ( packed )  );
- u16              m_VolDescSizeBE               __attribute__(  ( packed )  );
- u32              m_Unknown3                    __attribute__(  ( packed )  );
- u32              m_Unknown3BE                  __attribute__(  ( packed )  );
- u32              m_PriDirTblLBA                __attribute__(  ( packed )  );
- u32              m_Reserved7                   __attribute__(  ( packed )  );
- u32              m_SecDirTblLBA                __attribute__(  ( packed )  );
- u32              m_Reserved8                   __attribute__(  ( packed )  );
- rootDirTocHeader m_RootToc                     __attribute__(  ( packed )  );
- u8               m_VolSetName          [ 128 ] __attribute__(  ( packed )  );
- u8               m_PublisherName       [ 128 ] __attribute__(  ( packed )  );
- u8               m_PreparerName        [ 128 ] __attribute__(  ( packed )  );
- u8               m_ApplicationName     [ 128 ] __attribute__(  ( packed )  );
- u8               m_CopyrightFileName   [  37 ] __attribute__(  ( packed )  );
- u8               m_AbstractFileName    [  37 ] __attribute__(  ( packed )  );
- u8               m_BibliographyFileName[  37 ] __attribute__(  ( packed )  );
- asciiDate        m_CreationDate                __attribute__(  ( packed )  );
- asciiDate        m_ModificationDate            __attribute__(  ( packed )  );
- asciiDate        m_EffectiveDate               __attribute__(  ( packed )  );
- asciiDate        m_ExpirationDate              __attribute__(  ( packed )  );
- u8               m_Reserved10                  __attribute__(  ( packed )  );
- u8               m_Reserved11[ 1166 ]          __attribute__(  ( packed )  );
+ u8               m_FSType                      ;
+ u8               m_VolID[ 5 ]                  ;
+ u8               m_Reserved2                   ;
+ u8               m_Reserved3                   ;
+ u8               m_SysIDName[ 32 ]             ;
+ u8               m_VolName  [ 32 ]             ;
+ u8               m_Reserved5[  8 ]             ;
+ u32              m_VolSize                     ;
+ u32              m_VolSizeBE                   ;
+ u8               m_EscapeSeq[3]                ;
+ u8               m_Reserved6[ 29 ]             ;
+ u32              m_Unknown1                    ;
+ u32              m_Uunknown1BE                 ;
+ u16              m_VolDescSize                 ;
+ u16              m_VolDescSizeBE               ;
+ u32              m_Unknown3                    ;
+ u32              m_Unknown3BE                  ;
+ u32              m_PriDirTblLBA                ;
+ u32              m_Reserved7                   ;
+ u32              m_SecDirTblLBA                ;
+ u32              m_Reserved8                   ;
+ rootDirTocHeader m_RootToc                     ;
+ u8               m_VolSetName          [ 128 ];
+ u8               m_PublisherName       [ 128 ];
+ u8               m_PreparerName        [ 128 ];
+ u8               m_ApplicationName     [ 128 ];
+ u8               m_CopyrightFileName   [  37 ];
+ u8               m_AbstractFileName    [  37 ];
+ u8               m_BibliographyFileName[  37 ];
+ asciiDate        m_CreationDate;
+ asciiDate        m_ModificationDate;
+ asciiDate        m_EffectiveDate;
+ asciiDate        m_ExpirationDate;
+ u8               m_Reserved10;
+ u8               m_Reserved11[ 1166 ];          
 
-} cdVolDesc;
+} cdVolDesc __attribute__(  ( packed )  );
 
 typedef struct dirTableEntry {
 
- u8  m_DirNameLength __attribute__(  ( packed )  );
- u8  m_Reserved      __attribute__(  ( packed )  );
- u32 m_DirTOCLBA     __attribute__(  ( packed )  );
- u16 m_DirDepth      __attribute__(  ( packed )  );
- u8  m_DirName[ 32 ] __attribute__(  ( packed )  );
+ u8  m_DirNameLength;
+ u8  m_Reserved;
+ u32 m_DirTOCLBA;
+ u16 m_DirDepth;
+ u8  m_DirName[ 32 ];
 
-} dirTableEntry;
+} dirTableEntry __attribute__(  ( packed )  );
 
 typedef struct dirTocEntry {
 
- short         m_Length          __attribute__(  ( packed )  );
- unsigned int  m_FileLBA         __attribute__(  ( packed )  );
- unsigned int  m_FileLBABE       __attribute__(  ( packed )  );
- unsigned int  m_FileSize        __attribute__(  ( packed )  );
- unsigned int  m_FileSizeBE      __attribute__(  ( packed )  );
- unsigned char m_DateStamp[ 6 ]  __attribute__(  ( packed )  );
- unsigned char m_Reserved1       __attribute__(  ( packed )  );
- unsigned char m_FileProperties  __attribute__(  ( packed )  );
- unsigned char m_Reserved2[ 6 ]  __attribute__(  ( packed )  );
- unsigned char m_FilenameLength  __attribute__(  ( packed )  );
- unsigned char m_Filename[ 128 ] __attribute__(  ( packed )  );
+ short         m_Length;
+ unsigned int  m_FileLBA;
+ unsigned int  m_FileLBABE;
+ unsigned int  m_FileSize;
+ unsigned int  m_FileSizeBE;
+ unsigned char m_DateStamp[ 6 ];
+ unsigned char m_Reserved1;
+ unsigned char m_FileProperties;
+ unsigned char m_Reserved2[ 6 ];
+ unsigned char m_FilenameLength;
+ unsigned char m_Filename[ 128 ]; 
 
-} dirTocEntry;
+} dirTocEntry __attribute__(  ( packed )  );
 
 typedef struct fdtable {
 
@@ -202,8 +202,8 @@ static int ( *Func_DRead  ) ( iop_io_file_t*, void*       );
 static int ( *Func_DClose ) ( iop_io_file_t*              );
 
 static int CDVD_init  ( iop_io_device_t*                      );
-static int CDVD_open  ( iop_io_file_t*, const char*, int, ... );
-static int CDVD_lseek ( iop_io_file_t*, unsigned long, int    );
+static int CDVD_open  ( iop_io_file_t*, const char*, int);
+static int CDVD_lseek ( iop_io_file_t*, int, int    );
 static int CDVD_read  ( iop_io_file_t*, void*, int            );
 static int CDVD_write ( iop_io_file_t*, void*, int            );
 static int CDVD_close ( iop_io_file_t*                        );
@@ -373,7 +373,7 @@ static int ISO_Open ( iop_io_file_t* apFile, const char* name ) {
 
 }  /* end ISO_Open */
 
-static int CDVD_open ( iop_io_file_t* apFile, const char* apName, int aMode, ... ) {
+static int CDVD_open ( iop_io_file_t* apFile, const char* apName, int aMode) {
 
  if ( aMode != O_RDONLY ) return -EACCES;
 
@@ -381,7 +381,7 @@ static int CDVD_open ( iop_io_file_t* apFile, const char* apName, int aMode, ...
 
 }  /* end CDVD_open */
 
-static int CDVD_lseek ( iop_io_file_t* apFile, unsigned long offset, int whence ) {
+static int CDVD_lseek ( iop_io_file_t* apFile, int offset, int whence ) {
 
  int i = _LookupFD (  ( int )apFile -> privdata  );
 
@@ -539,15 +539,15 @@ static int CDVD_findfile ( const char* fname, struct TocEntry* tocEntry ) {
 
  if (  CachedDirInfo.m_Valid  && ComparePath ( pathname ) == MATCH  ) {
 
-  ( char* )tocEntryPointer = CachedDirInfo.cache;
+  tocEntryPointer = (dirTocEntry *)CachedDirInfo.cache;
 
   for (  ; ( char* )tocEntryPointer < (  CachedDirInfo.cache + ( CachedDirInfo.m_CacheSize * 2048 )  );
-           ( char* )tocEntryPointer += tocEntryPointer -> m_Length
+           tocEntryPointer += tocEntryPointer -> m_Length
   ) {
 
    if ( !tocEntryPointer -> m_Length )
 
-    ( char* )tocEntryPointer = CachedDirInfo.cache + (     (    (   (  ( char* )tocEntryPointer - CachedDirInfo.cache  ) / 2048   ) + 1    ) * 2048     );
+    tocEntryPointer = (dirTocEntry *)CachedDirInfo.cache + (     (    (   (  ( char* )tocEntryPointer - CachedDirInfo.cache  ) / 2048   ) + 1    ) * 2048     );
 
    if (   ( char* )tocEntryPointer >= (  CachedDirInfo.cache + ( CachedDirInfo.m_CacheSize * 2048 )  )   ) break;
 
@@ -577,17 +577,17 @@ static int CDVD_findfile ( const char* fname, struct TocEntry* tocEntry ) {
 
  while ( CachedDirInfo.m_CacheSize > 0 ) {
 
-  ( char* )tocEntryPointer = CachedDirInfo.cache;
+  tocEntryPointer = (struct dirTocEntry *)CachedDirInfo.cache;
 
-  if ( !CachedDirInfo.m_CacheOffset ) ( char* )tocEntryPointer += tocEntryPointer -> m_Length;
+  if ( !CachedDirInfo.m_CacheOffset ) tocEntryPointer += tocEntryPointer -> m_Length;
 
   for (  ; ( char* )tocEntryPointer < (  CachedDirInfo.cache + ( CachedDirInfo.m_CacheSize * 2048 )  );
-           ( char* )tocEntryPointer += tocEntryPointer -> m_Length
+           tocEntryPointer += tocEntryPointer -> m_Length
   ) {
 
    if ( !tocEntryPointer -> m_Length )
 
-    ( char* )tocEntryPointer = CachedDirInfo.cache + (     (    (   (  ( char* )tocEntryPointer - CachedDirInfo.cache  ) / 2048   ) + 1    ) * 2048     );
+    tocEntryPointer = (struct dirTocEntry *)(CachedDirInfo.cache + ( ( ( (( char* )tocEntryPointer - CachedDirInfo.cache  ) / 2048   ) + 1    ) * 2048));
 
    if (   ( char* )tocEntryPointer >= (  CachedDirInfo.cache + ( CachedDirInfo.m_CacheSize * 2048 )  )   ) break;
 
@@ -724,18 +724,18 @@ static int FindPath ( char* pathname ) {
 
   found_dir = FALSE;
 
-  ( char* )tocEntryPointer  = CachedDirInfo.cache;
-  ( char* )tocEntryPointer += tocEntryPointer -> m_Length;
+  tocEntryPointer  = (struct dirTocEntry *)CachedDirInfo.cache;
+  tocEntryPointer += tocEntryPointer -> m_Length;
 
   dir_entry = 0;
 
   for (  ; ( char* )tocEntryPointer < (  CachedDirInfo.cache + ( CachedDirInfo.m_CacheSize * 2048 )  );
-           ( char* )tocEntryPointer += tocEntryPointer -> m_Length
+           tocEntryPointer += tocEntryPointer -> m_Length
   ) {
 
    if ( !tocEntryPointer -> m_Length )
 
-    ( char* )tocEntryPointer = CachedDirInfo.cache + (     (    (   (  ( char* )tocEntryPointer - CachedDirInfo.cache  ) / 2048   ) + 1    ) * 2048     );
+    tocEntryPointer = (struct dirTocEntry *)(CachedDirInfo.cache + (     (    (   (  ( char* )tocEntryPointer - CachedDirInfo.cache  ) / 2048   ) + 1    ) * 2048     ));
 
    if (   ( char* )tocEntryPointer >= (  CachedDirInfo.cache + ( CachedDirInfo.m_CacheSize * 2048 )  )   ) {
 
@@ -754,7 +754,7 @@ static int FindPath ( char* pathname ) {
             )
      ) return CachedDirInfo.m_Valid = FALSE;
 
-     ( char* )tocEntryPointer = CachedDirInfo.cache;
+     tocEntryPointer = (struct dirTocEntry *)CachedDirInfo.cache;
 
     } else return CachedDirInfo.m_Valid = FALSE;
 
@@ -896,10 +896,10 @@ static int ISO_DOpen (  iop_io_file_t* apFile, const char* apName ) {
  if (  !CDVD_Cache_Dir ( apName,                   CACHE_START )  ) return -ENOENT;
  if (  !CDVD_Cache_Dir ( CachedDirInfo.m_Pathname, CACHE_START )  ) return -ENOENT;
 
- ( char* )s_tocEntryPointer  = CachedDirInfo.cache;
- ( char* )s_tocEntryPointer += s_tocEntryPointer -> m_Length;
+ s_tocEntryPointer  = (struct dirTocEntry*)CachedDirInfo.cache;
+ s_tocEntryPointer += s_tocEntryPointer -> m_Length;
 
- if ( CachedDirInfo.m_PathDepth == 0 ) ( char* )s_tocEntryPointer += s_tocEntryPointer -> m_Length;
+ if ( CachedDirInfo.m_PathDepth == 0 ) s_tocEntryPointer += s_tocEntryPointer -> m_Length;
 
  s_DirEntry = 0;
 
@@ -925,7 +925,7 @@ static int ISO_DRead ( iop_io_file_t* apFile, void* apRetVal ) {
 
    if ( s_tocEntryPointer -> m_Length == 0 )
 
-    ( char* )s_tocEntryPointer = CachedDirInfo.cache + (((((char*)s_tocEntryPointer - CachedDirInfo.cache)/2048)+1)*2048);
+    s_tocEntryPointer = (struct dirTocEntry *)(CachedDirInfo.cache + (((((char*)s_tocEntryPointer - CachedDirInfo.cache)/2048)+1)*2048));
 
    if (  ( char* )s_tocEntryPointer >= CachedDirInfo.cache + ( CachedDirInfo.m_CacheSize * 2048 )  ) break;
 
@@ -943,7 +943,7 @@ static int ISO_DRead ( iop_io_file_t* apFile, void* apRetVal ) {
 
    ++s_DirEntry;
 
-   ( char* )s_tocEntryPointer += s_tocEntryPointer -> m_Length;
+   s_tocEntryPointer += s_tocEntryPointer -> m_Length;
 
    return 1;
 
@@ -955,7 +955,7 @@ static int ISO_DRead ( iop_io_file_t* apFile, void* apRetVal ) {
 
   } else break;
 
-  ( char* )s_tocEntryPointer = CachedDirInfo.cache;
+  s_tocEntryPointer = (struct dirTocEntry *)CachedDirInfo.cache;
 
  }  /* end while */
 
@@ -963,7 +963,7 @@ static int ISO_DRead ( iop_io_file_t* apFile, void* apRetVal ) {
 
 }  /* end ISO_DRead */
 
-static int CDVD_dread ( iop_io_file_t* apFile, void* apRetVal ) {
+static int CDVD_dread ( iop_io_file_t* apFile, io_dirent_t* apRetVal ) {
 
  return Func_DRead ( apFile, apRetVal );
 
@@ -1159,7 +1159,7 @@ static int CDVD_deinit ( iop_io_device_t* apDev ) {
 
 }  /* end CDVD_deinit */
 
-static int CDVD_format ( iop_io_file_t* apFile, ... ) {
+static int CDVD_format ( iop_io_file_t* apFile) {
 
  return -ENOTSUP;
 
@@ -1177,13 +1177,13 @@ static int CDVD_dummy_file ( iop_io_file_t* apFile, const char* apName ) {
 
 }  /* end CDVD_dummy_file */
 
-static int CDVD_getstat ( iop_io_file_t* apFile, const char* apName, void* apRetVal ) {
+static int CDVD_getstat ( iop_io_file_t* apFile, const char* apName, io_stat_t* apRetVal ) {
 
  return -ENOTSUP;
 
 }  /* end CDVD_getstat */
 
-static int CDVD_chstat ( iop_io_file_t* apFile, const char* apName, void* apPtr, unsigned int aVal ) {
+static int CDVD_chstat ( iop_io_file_t* apFile, const char* apName, io_stat_t* apPtr, unsigned int aVal ) {
 
  return -ENOTSUP;
 

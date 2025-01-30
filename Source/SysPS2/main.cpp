@@ -481,9 +481,9 @@ static void DisplayRomsAndChoose(bool show_splash)
 
 int main(int argc, char* argv[])
 {
-	//argc = 1;
+	argc = 2;
 	//argv[1] = "mass:Roms/rom3.z64";
-	//argv[1] = "host:Roms/rom3.z64";
+	argv[1] = "host:Roms/007.n64";
 
 	//argv[0] = "hdd0:__common:pfs:/N64/FMCB_configurator.elf";
 	//argv[0] = "mass:ffffffffffffffffffffffffffffffffelf.elf";

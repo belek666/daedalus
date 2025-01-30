@@ -242,7 +242,7 @@ public:
 	inline void			SetFogColour( c32 colour )				{ mFogColour = colour; }
 
 	// PrimDepth will replace the z value if depth_source=1 (z range 32767-0 while PSP depthbuffer range 0-65535)//Corn
-#ifdef DAEDALUS_PSP
+#if defined(DAEDALUS_PSP) || defined(DAEDALUS_PS2)
 	inline void			SetPrimitiveDepth( u32 z )				{ mPrimDepth = (f32)( ( ( 32767 - z ) << 1) + 1 ); }
 #else
 	inline void			SetPrimitiveDepth( u32 z )				{ mPrimDepth = (f32)(z - 0x4000) / (f32)0x4000;}

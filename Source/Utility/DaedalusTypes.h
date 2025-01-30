@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if defined(DAEDALUS_PS2)
 #include <tamtypes.h>
 #include <stdint.h>
+#include <strings.h>
 
 typedef float					f32;
 typedef double					f64;

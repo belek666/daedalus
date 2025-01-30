@@ -1,6 +1,7 @@
 // Copyright (C) 2001 StrmnNrmn
 // Copyright (C) 2011 Corn
 
+#define ABI_EABI64
 #include "as_reg_compat.h"
 
 #define LIGHTSZ				6	//1<<6 bytes

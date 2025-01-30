@@ -40,7 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define SIM_DOUBLES
 #elif defined(DAEDALUS_PS2)
 #include <math.h>
-
+#define isnanf isnan
 #define SIM_DOUBLES
 #else
 #include <float.h>

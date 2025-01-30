@@ -256,7 +256,6 @@ void IGraphicsContext::ClearAllSurfaces()
 //*****************************************************************************
 void IGraphicsContext::ClearToBlack()
 {
-#if 1
 	u64* p_data;
 	u64* p_store;
 
@@ -269,14 +268,10 @@ void IGraphicsContext::ClearToBlack()
 
 	gsKit_clear_sprite(gsGlobal, GS_SETREG_RGBAQ(0x00, 0x00, 0x00, 0x80, 0x00));
 	gsKit_set_test(gsGlobal, 0);
-#else
-	gsKit_clear(gsGlobal, GS_SETREG_RGBAQ(0x00, 0x00, 0x00, 0x80, 0x00));
-#endif
 }
 
 void IGraphicsContext::ClearZBuffer()
 {
-#if 1
 	u64* p_data;
 	u64* p_store;
 
@@ -289,14 +284,10 @@ void IGraphicsContext::ClearZBuffer()
 
 	gsKit_clear_sprite(gsGlobal, GS_SETREG_RGBAQ(0x00, 0x00, 0x00, 0x80, 0x00));
 	gsKit_set_test(gsGlobal, 0);
-#else
-	gsKit_clear(gsGlobal, GS_SETREG_RGBAQ(0x00, 0x00, 0x00, 0x80, 0x00));
-#endif
 }
 
 void IGraphicsContext::ClearColBuffer(const c32 & colour)
 {
-#if 1
 	u64* p_data;
 	u64* p_store;
 
@@ -304,21 +295,15 @@ void IGraphicsContext::ClearColBuffer(const c32 & colour)
 
 	*p_data++ = GIF_TAG_AD(1);
 	*p_data++ = GIF_AD;
-	*p_data++ = GS_SETREG_TEST(1, 0, 0x80, 1, 0, 0, 1, 1);
+	*p_data++ = GS_SETREG_TEST(1, 0, (colour.GetA() + 1) / 2, 1, 0, 0, 1, 1);
 	*p_data++ = GS_TEST_1 + gsGlobal->PrimContext;
 
-	gsKit_depth_mask(1);
 	gsKit_clear_sprite(gsGlobal, GS_SETREG_RGBAQ(colour.GetR(), colour.GetG(), colour.GetB(), (colour.GetA() + 1) / 2, 0x00));
 	gsKit_set_test(gsGlobal, 0);
-	gsKit_depth_mask(0);
-#else
-	gsKit_clear(gsGlobal, GS_SETREG_RGBAQ(colour.GetR(), colour.GetG(), colour.GetB(), (colour.GetA() + 1) / 2, 0x00));
-#endif
 }
 
 void IGraphicsContext::ClearColBufferAndDepth(const c32 & colour)
 {
-#if 1
 	u64* p_data;
 	u64* p_store;
 
@@ -331,9 +316,6 @@ void IGraphicsContext::ClearColBufferAndDepth(const c32 & colour)
 
 	gsKit_clear_sprite(gsGlobal, GS_SETREG_RGBAQ(colour.GetR(), colour.GetG(), colour.GetB(), (colour.GetA() + 1) / 2, 0x00));
 	gsKit_set_test(gsGlobal, 0);
-#else
-	gsKit_clear(gsGlobal, GS_SETREG_RGBAQ(colour.GetR(), colour.GetG(), colour.GetB(), (colour.GetA() + 1) / 2, 0x00));
-#endif
 }
 
 //*****************************************************************************
@@ -459,18 +441,18 @@ bool IGraphicsContext::Initialise()
 	gsGlobal = gsKit_init_global();
 	gsFontM = gsKit_init_fontm();
 
-	if (g32bitColorMode)
+	/*if (g32bitColorMode)
 	{
 		gsGlobal->PSM = GS_PSM_CT32;
 		gsGlobal->PSMZ = GS_PSMZ_24;
 		gsZMax = 0xFFFFFF;
 	}
 	else
-	{
+	{*/
 		gsGlobal->PSM = GS_PSM_CT16S;
 		gsGlobal->PSMZ = GS_PSMZ_24;
 		gsZMax = 0xFFFFFF;
-	}
+	//}
 	
 	gsGlobal->DoubleBuffering = GS_SETTING_OFF;
 	gsGlobal->PrimAlphaEnable = GS_SETTING_ON;

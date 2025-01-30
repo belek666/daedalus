@@ -1,3 +1,4 @@
+#define ABI_EABI64
 #include "as_reg_compat.h"
 
 //The top two defines needs to be adjusted depending on how gCPUState struct is formated in CPU.h!! //Corn
@@ -723,46 +724,26 @@ _DMULTU:
  * uses: t0
  */
 _DMULT:
-	sq		$t0, _Temp1+0($fp)
-	bgez	$a0, rs_pos
-	move	$a3, $zero			// sign
-	dsubu	$a0, $zero, $a0
-	ori		$a3, 1
-rs_pos:
-	bgez	$a1, rt_pos
 	pexcw	$a0, $a0
-	dsubu	$a1, $zero, $a1
-	xori	$a3, 1
-rt_pos:
 	pexcw	$a1, $a1
-	pmultuw $v0, $a0, $a1
+	pmultw  $v0, $a0, $a1
 	pexew  	$a1, $a1
-	pmultuw $v1, $a0, $a1
+	pmultw  $v1, $a0, $a1
 	dsrl32  $a0, $v0, 0
 	daddu	$a0, $a0, $v1 		// temp2
 	pexcw	$a1, $v1
 	dsrl32  $a1, $a1, 0
 	daddu	$a1, $a1, $a0 		// result2
-	pextlw	$t0, $a1, $v0		// lo
+	sw		$v0, _MultLo+0($fp)
+	sw		$a1, _MultLo+4($fp)
 	dsrl32  $a1, $a1, 0 		// (result2 >> 32)
 	pcpyud	$a0, $v1, $zero 	// temp3
 	dsrl32  $a0, $a0, 0 		// (temp3 >> 32)
 	pcpyud	$a2, $v0, $zero		// op2 * op4
 	daddu	$a0, $a2, $a0		// temp4
-	beq		$a3, $zero, no_sign
-	daddu	$a0, $a1, $a0 		// result3, hi
-	beq		$t0, $zero, lo_zero
-	nor		$a0, $a0, $a0
-	nor		$t0, $t0, $t0
-	b 		no_sign
-	daddiu	$t0, $t0, 1
-lo_zero:
-	daddiu	$a0, $a0, 1
-no_sign:
-	sd		$t0, _MultLo+0($fp)
-	sd		$a0, _MultHi+0($fp)
+	daddu	$a0, $a1, $a0 		// result3
 	jr		$ra
-	lq		$t0, _Temp1+0($fp)
+	sd		$a0, _MultHi+0($fp)
 
 #######################################################################################
 /**
